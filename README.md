@@ -25,3 +25,12 @@ The most suitable IDE to use to run the GUI is the ATOM IDE.
 3. Open your terminal and Install the PySimpleGUI model by running **'pip install pysimplegui' 
 4. With Scripts installed in your ATOM IDE, hold Ctrl + Shift + B to load the GUI
 
+# GUI Functionalities 
+1. Perform the basic operation as the **COMMAND LINE** of the application by finding the amount earned.
+2. Can View Previously Done Work in excel by using the **VIEW HISTORY** BUTTON
+3. Can Calculate the money earned from a given Time
+4. Automatically Save files in .csv format. 
+
+# Screenshots of the GUI
+
+![Screenshot (11)](https://user-images.githubusercontent.com/48289239/89109122-e9d6b280-d42d-11ea-8939-c6337690d1aa.png)
