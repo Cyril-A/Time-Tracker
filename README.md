@@ -7,7 +7,8 @@ This a Python program that allows Nana track the time spent working on his clien
 3. In the Clone with HTTPs section, copy the clone URL for the repository.
 4. Open the terminal and change the current working directory to the location where you want the cloned directory to be made
 5. Type git clone, and then paste the URL you copied in Step 3. Press Enter and your local clone will be created.
-3. Extract the .py file and run in an editor.
+6. Extract the .py file and run in an editor. 
+7. For GUI.py, it is advisable to run it in the ATOM IDE by first running "pip install pysimplegui" and then holding the Ctrl + Shift + B buttons to run the script
 
    
   ## PROGRAM DEPENDENCIES
@@ -33,3 +34,5 @@ This a Python program that allows Nana track the time spent working on his clien
 ## CONCLUSION:
  
 This program meets the client's user requirements.
+
+To get the GUI VERSION 
