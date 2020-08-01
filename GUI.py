@@ -85,7 +85,7 @@ def main():
             seconds = stop - start
             hour = round(seconds / 3600, 2)
             PAY_PER_HOUR = 5
-            total_money = hour * PAY_PER_HOUR
+            total_money = round((hour * PAY_PER_HOUR), 2)
             stop_timer = time.ctime(int(stop))
             msg1=f'You ended workng at {stop_timer}'
             msg2 = f"Wheeew!!!you have spent {hour} hours..."
@@ -183,7 +183,7 @@ def main():
                 # converts into total hours of work in float
                 hour = round((total_mins/60), 2)
 
-                total_money = hour * PAY_PER_HOUR  # finds the total dollars
+                total_money = round((hour * PAY_PER_HOUR), 2)  # finds the total dollars
 
                 n = f'Your Previous task: {taskname}'
                 mess = f'Your calculated money is $ {total_money}'
