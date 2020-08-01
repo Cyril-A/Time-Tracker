@@ -61,3 +61,52 @@ def main():
                ]
 
     window = sg.Window('Time Tracking', layout, margins=(0,0), background_color=BORDER_COLOR, no_titlebar=False, grab_anywhere=True)
+    while True:             # Event Loop
+        event, values = window.read()
+        if event == sg.WIN_CLOSED or event == 'Exit':
+            break
+        if event == "Enter":
+            global taskname
+            taskname = values['enter']
+        if event == "Start":
+            def start_time():
+                global start, message, msg
+                start = time.time()
+                message = time.ctime(int(start))
+                msg = f'You started working at {message}'
+                return msg
+            window['ML1'].update(value = start_time() + '\n')
+        if event == "Stop":
+            global stop_timer, msg, today
+            taskname = values['enter']Z
+            today = date.today()
+            stop = time.time()
+            seconds = stop - start
+            hour = round(seconds / 3600, 2)
+            PAY_PER_HOUR = 5
+            total_money = hour * PAY_PER_HOUR
+            stop_timer = time.ctime(int(stop))
+            msg1=f'You ended workng at {stop_timer}'
+            msg2 = f"Wheeew!!!you have spent {hour} hours..."
+            msg3 = f"Nice, you have made ${total_money}..."
+
+            window['ML1'].update(value= msg + '\n' + msg1 +'\n' + '\n' + msg2 + '\n'+'\n' +msg3)
+
+            with open('tracking.csv', 'a', newline="") as csv_file:
+                header = ['Type','Current Date', 'Task Name', 'Started', 'Ended ',
+                                'Hours', 'Amount Earned $']
+                writer = csv.DictWriter(csv_file, fieldnames=header)
+
+ 
+
+                data = {'Type': 'LIVE SESSION', 'Current Date':today, 'Task Name': taskname, 'Started': message,
+                                'Ended ': stop_timer, 'Hours': hour,
+                                'Amount Earned $': total_money}
+                with open('tracking.csv', 'r') as reader:
+                    d_reader = csv.DictReader(reader)
+                    headers = d_reader.fieldnames
+                    if headers == None:
+                        writer.writeheader()
+                        writer.writerow(data)
+                    else:
+                        writer.writerow(data)
