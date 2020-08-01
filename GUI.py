@@ -61,6 +61,7 @@ def main():
                ]
 
     window = sg.Window('Time Tracking', layout, margins=(0,0), background_color=BORDER_COLOR, no_titlebar=False, grab_anywhere=True)
+    
     while True:             # Event Loop
         event, values = window.read()
         if event == sg.WIN_CLOSED or event == 'Exit':
@@ -92,12 +93,11 @@ def main():
 
             window['ML1'].update(value= msg + '\n' + msg1 +'\n' + '\n' + msg2 + '\n'+'\n' +msg3)
 
+
             with open('tracking.csv', 'a', newline="") as csv_file:
                 header = ['Type','Current Date', 'Task Name', 'Started', 'Ended ',
                                 'Hours', 'Amount Earned $']
                 writer = csv.DictWriter(csv_file, fieldnames=header)
-
- 
 
                 data = {'Type': 'LIVE SESSION', 'Current Date':today, 'Task Name': taskname, 'Started': message,
                                 'Ended ': stop_timer, 'Hours': hour,
@@ -110,3 +110,104 @@ def main():
                         writer.writerow(data)
                     else:
                         writer.writerow(data)
+
+        if event == "Clear Results":
+            window['ML1'].update("")
+            window['enter'].update("")
+
+        if event == "View History":
+            filename = sg.PopupGetFile('tracking', no_window=False, file_types=(("CSV Files","*.csv"),))
+            # --- populate table with file contents --- #
+            data = []
+            if filename is not None:
+                with open(filename, "r") as infile:
+                    reader = csv.reader(infile)
+                    try:
+                        data = list(reader)  # read everything else into a list of rows
+                    except:
+                        sg.PopupError('Error reading file')
+                        exit(69)
+
+            sg.SetOptions(element_padding=(0, 0))
+
+            col_layout = [[sg.Table(values=data, headings=[x for x in range(len(data[0]))], max_col_width=8,
+                                    auto_size_columns=False, justification='right', size=(8, len(data)))]]
+
+            layout = [[sg.Column(col_layout, size=(1200,600), scrollable=True)],]
+
+            form = sg.FlexForm('Table', grab_anywhere=False)
+            b, v = form.Layout(layout).Read()
+
+        if event == "Calculate":
+
+            global start_minutes, end_minutes, end_mins, end_time
+            start_minutes = 0
+            end_minutes = 0
+            PAY_PER_HOUR = 5
+            taskname = values['old']
+            start_time = values['startt']
+            end_time = values['endd']
+
+            if start_time[-2:] == "PM" and int(start_time[:2 < 12]):
+                start_minutes += (int(start_time[:2]) + 12)*60
+                start_minutes += (int(start_time[3:5]))
+
+            elif start_time[-2:] == "AM" and int(start_time[:2]) == 12:
+                start_minutes += (int(start_time[3:5]))
+            else:
+                start_minutes += (int(start_time[:2])*60)
+                start_minutes += (int(start_time[3:5]))
+
+
+            if end_time[-2:] == "PM" and int(end_time[:2 < 12]):
+                end_minutes += (int(end_time[:2]) + 12)*60
+                end_minutes += (int(end_time[3:5]))
+
+            elif end_time[-2:] == "AM" and int(end_time[:2]) == 12:
+                end_minutes += (int(end_time[3:5]))
+            else:
+                end_minutes += (int(end_time[:2])*60)
+                end_minutes += (int(end_time[3:5]))
+
+            # converts into the total minutes
+            start_mins = start_minutes
+            start_hr = start_mins/60
+            end_mins = end_minutes  # converts into the total minutes
+            end_hr = end_mins/60
+            today = date.today()
+
+            if end_mins >= start_mins:  # checs if end_mins >= start_mins
+                global mess
+                total_mins = end_mins - start_mins  # gets the difference between the two times
+
+                # converts into total hours of work in float
+                hour = round((total_mins/60), 2)
+
+                total_money = hour * PAY_PER_HOUR  # finds the total dollars
+
+                n = f'Your Previous task: {taskname}'
+                mess = f'Your calculated money is $ {total_money}'
+
+                window['ML1'].update(value= n + '\n' + mess)
+
+                with open('tracking.csv', 'a', newline="") as csv_file:
+                    header = ['Type', 'Current Date', 'Task Name', 'Started', 'Ended ',
+                                    'Hours', 'Amount Earned $']
+                    writer = csv.DictWriter(csv_file, fieldnames=header)
+
+                    data = {'Type': 'OLD WORK', 'Current Date': today, 'Task Name': taskname, 'Started': start_hr,
+                                    'Ended ': end_hr, 'Hours': hour,
+                                    'Amount Earned $': total_money}
+                    with open('tracking.csv', 'r') as reader:
+                        d_reader = csv.DictReader(reader)
+                        headers = d_reader.fieldnames
+                        if headers == None:
+                            writer.writeheader()
+                            writer.writerow(data)
+                        else:
+                            writer.writerow(data)
+    window.close()
+
+if __name__ == '__main__':
+    sg.theme('DarkAmber')
+    main()
