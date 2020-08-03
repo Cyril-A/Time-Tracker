@@ -77,5 +77,4 @@ Install the following dependencies.
 ## CONCLUSION:
  
 This program meets the client's user requirements.
-
-To get the GUI VERSION 
+ 
